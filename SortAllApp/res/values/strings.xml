@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">全部应用</string>
+	<string name="search_hint">输入关键字</string>
+	
+	
+	<dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    
+    <item type="id" name="gridview_item_app"></item>
+    <color name="gridview_item_bg_pressed">#E0E0E0</color>
+    
+</resources>
