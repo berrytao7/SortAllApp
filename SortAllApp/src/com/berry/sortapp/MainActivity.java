@@ -84,7 +84,8 @@ public class MainActivity extends Activity {
       protected void onPostExecute(Void result) {
         // TODO Auto-generated method stub
         super.onPostExecute(result);
-        initView();dialog.dismiss();
+        initView();
+        dialog.dismiss();
       }
       
     }

@@ -2,9 +2,11 @@ package com.berry.sortapp.adapter;
 
 import java.util.List;
 
+import com.berry.sortapp.AppManager;
 import com.berry.sortapp.R;
 import com.berry.sortapp.bean.AppInfo;
 import com.berry.sortapp.bean.SortModel;
+import com.berry.sortapp.utils.AppCollector;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -65,6 +68,7 @@ public class AppSortListViewAdapter extends BaseAdapter {
         
         AppGridViewAdapter adapter = new AppGridViewAdapter(context, sortModel.getApps());
         holder.appGv.setAdapter(adapter);
+        //item click event
         holder.appGv.setOnItemClickListener(new OnItemClickListener() {
 
           @Override
@@ -80,18 +84,19 @@ public class AppSortListViewAdapter extends BaseAdapter {
           }
           
         });
-        // 根据position获取分类的首字母的Char ascii值
-//      int section = getSectionForPosition(position);
-//
-//      // 如果当前位置等于该分类首字母的Char的位置 ，则认为是第一次出现
-//      if (position == getPositionForSection(section)) {
-//          holder.letterTv.setVisibility(View.VISIBLE);
-//          holder.letterTv.setText(sortModel.getSortLetters());
-//      } else {
-//          holder.letterTv.setVisibility(View.GONE);
-//      }
+        //item long click event
+        holder.appGv.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-        //viewHolder.tvTitle.setText(this.list.get(position).getName());
+          @Override
+          public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            if (view!=null) {
+              AppInfo info = (AppInfo) view.getTag(R.id.gridview_item_app);
+              AppManager.showInstalledAppDetails(context, info.getCn().getPackageName());
+            }
+            return true;
+          }
+          
+        });
         return convertView;
     }
 

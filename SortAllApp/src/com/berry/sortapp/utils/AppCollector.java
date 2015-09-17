@@ -60,7 +60,7 @@ public class AppCollector {
 		List<AppInfo> appInfoList = new ArrayList<AppInfo>();
 		for (AppInfo appInfo : appInfos) {
 
-			if (letter.equals("#") && appInfo.getAppName().matches("[0-9](.)*")) {
+			if (letter.equals("#") && appInfo.getByName().matches("[0-9](.)*")) {
 				appInfoList.add(appInfo);
 			} else {
 			// 汉字转换成拼音
@@ -68,8 +68,9 @@ public class AppCollector {
 //				String pinyin = CharacterParser.getInstance().getSelling(
 //						appInfo.getAppName());
 			  //方法二.使用pinyin4j-2.5.0.jar,暂时未发现错误拼音
-			  String pinyin = getPinYin(appInfo.getAppName());
-				String sortString = pinyin.substring(0, 1).toUpperCase(Locale.getDefault());
+//			  String pinyin = getPinYin(appInfo.getAppName());
+//				String sortString = pinyin.substring(0, 1).toUpperCase(Locale.getDefault());
+ 				String sortString = appInfo.getByName().substring(0, 1).toUpperCase(Locale.getDefault());
 
 				// 正则表达式，判断首字母是否是英文字母
 				if (sortString.matches("[A-Z]")) {

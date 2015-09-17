@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.berry.sortapp.bean.AppInfo;
+import com.berry.sortapp.utils.AppCollector;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -13,6 +14,9 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
 
 /**
  * App管理者,用来获取设备上的所有app
@@ -41,7 +45,9 @@ public class AppManager {
 	      Drawable appIcon = info.activityInfo.loadIcon(context.getPackageManager());
 	      boolean isUserApp = checkAppType(context,packagename)==1?true:false;
 	      ComponentName cn = new ComponentName(packagename, appname);
-          AppInfo appInfo = new AppInfo(appLabel, appIcon,cn,isUserApp);
+	      // 汉字转换成拼音
+	      String byName = AppCollector.getPinYin(appLabel);
+          AppInfo appInfo = new AppInfo(appLabel, appIcon,cn,isUserApp,byName);
           appList.add(appInfo);
 		}
 		return appList;
@@ -64,7 +70,8 @@ public class AppManager {
               Drawable appIcon = applicationInfo.loadIcon(context.getPackageManager());
               ComponentName cn = new ComponentName(pkgName, className);
               boolean isUserApp = checkAppType(context,pkgName)==1?true:false;
-              AppInfo appInfo = new AppInfo(appName, appIcon,cn,isUserApp);
+              String byName = AppCollector.getPinYin(appName);
+              AppInfo appInfo = new AppInfo(appName, appIcon,cn,isUserApp,byName);
               appList.add(appInfo);
           }
           
@@ -117,4 +124,51 @@ public class AppManager {
     public boolean isUserApp(PackageInfo pInfo) {  
         return (!isSystemApp(pInfo) && !isSystemUpdateApp(pInfo));  
     }  
+    
+    
+    
+    private static final String SCHEME = "package";
+    /**
+    * 调用系统InstalledAppDetails界面所需的Extra名称(用于Android 2.1及之前版本)
+    */
+    private static final String APP_PKG_NAME_21 = "com.android.settings.ApplicationPkgName";
+    /**
+    * 调用系统InstalledAppDetails界面所需的Extra名称(用于Android 2.2)
+    */
+    private static final String APP_PKG_NAME_22 = "pkg";
+    /**
+    * InstalledAppDetails所在包名
+    */
+    private static final String APP_DETAILS_PACKAGE_NAME = "com.android.settings";
+    /**
+    * InstalledAppDetails类名
+    */
+    private static final String APP_DETAILS_CLASS_NAME = "com.android.settings.InstalledAppDetails";
+    /**
+    * 调用系统InstalledAppDetails界面显示已安装应用程序的详细信息。 对于Android 2.3（Api Level
+    * 9）以上，使用SDK提供的接口； 2.3以下，使用非公开的接口（查看InstalledAppDetails源码）。
+    *
+    * @param context
+    *
+    * @param packageName
+    * 应用程序的包名
+    */
+    public static void showInstalledAppDetails(Context context, String packageName) {
+    Intent intent = new Intent();
+    final int apiLevel = Build.VERSION.SDK_INT;
+    if (apiLevel >= 9) { // 2.3（ApiLevel 9）以上，使用SDK提供的接口
+    intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+    Uri uri = Uri.fromParts(SCHEME, packageName, null);
+    intent.setData(uri);
+    } else { // 2.3以下，使用非公开的接口（查看InstalledAppDetails源码）
+    // 2.2和2.1中，InstalledAppDetails使用的APP_PKG_NAME不同。
+    final String appPkgName = (apiLevel == 8 ? APP_PKG_NAME_22
+    : APP_PKG_NAME_21);
+    intent.setAction(Intent.ACTION_VIEW);
+    intent.setClassName(APP_DETAILS_PACKAGE_NAME,
+    APP_DETAILS_CLASS_NAME);
+    intent.putExtra(appPkgName, packageName);
+    }
+    context.startActivity(intent);
+    }
 }

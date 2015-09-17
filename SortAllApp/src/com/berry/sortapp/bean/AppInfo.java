@@ -15,13 +15,18 @@ public class AppInfo {
   private String appName;
   private ComponentName cn;
   private boolean isUserApp;
+  private String byName;//拼音名称
+  
+  public AppInfo() {
+  }
 
-  public AppInfo(String appName, Drawable appIcon, ComponentName cn,boolean isUserApp) {
+  public AppInfo(String appName, Drawable appIcon, ComponentName cn,boolean isUserApp,String byName) {
     super();
     this.appName = appName;
     this.appIcon = appIcon;
     this.cn = cn;
     this.isUserApp = isUserApp;
+    this.byName = byName;
   }
 
   public String getAppName() {
@@ -54,6 +59,14 @@ public class AppInfo {
 
   public void setUserApp(boolean isUserApp) {
     this.isUserApp = isUserApp;
+  }
+
+  public String getByName() {
+    return byName;
+  }
+
+  public void setByName(String byName) {
+    this.byName = byName;
   }
 
  
